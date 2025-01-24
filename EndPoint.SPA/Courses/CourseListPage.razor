@@ -1,0 +1,80 @@
+﻿@page "/Courses/List"
+@inject MediatR.IMediator _mediator
+@rendermode InteractiveServer
+@attribute [StreamRendering]
+
+
+<PageTitle>Course List</PageTitle>
+
+@if (Courses==null)
+{
+    <p><em>Loading ...</em></p>
+}
+else
+{
+    if (Courses.Any())
+    {
+
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Author</th>
+                    <th>Level</th>
+                    <th>Release Date</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                @foreach (CourseViewModel course in Courses)
+                {
+                    <tr>
+                        <td>@course.Name</td>
+                        <td>@course.Author</td>
+                        <td>@course.Level</td>
+                        <td>@course.ReleaseDate</td>
+                        <td>
+                            <a class="btn btn-success" href="/Courses/Edit/@course.Id">Edit</a> |
+
+                            <button class="btn btn-danger" @onclick="()=>RemoveCourse(course.Id)">Remove</button>
+
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+
+    }
+    else
+    {
+        <div class="alert alert-info">
+            <p>Course list is empty</p>
+        </div>
+    }
+}
+
+@code {
+    [SupplyParameterFromForm]
+    public List<CourseViewModel> Courses { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var res = await _mediator.Send(new GetCourseListQuery());
+        Courses = res.Select(ef => new CourseViewModel()
+            {
+                Id=ef.Id,
+                Name=ef.Name,
+                Description=ef.Description,
+                Author=ef.Author,
+                ReleaseDate=ef.ReleaseDate,
+                Level=ef.Level
+            }).ToList();
+    }
+
+    private async void RemoveCourse(int id)
+    {
+        await _mediator.Send(new RemoveCourseCommand(id));
+    }
+}
