@@ -1,0 +1,81 @@
+﻿@page "/Courses/Edit/{Id:int}"
+@rendermode InteractiveServer
+@inject NavigationManager _navigation
+@inject MediatR.IMediator _mediator
+<PageTitle>Edit Course</PageTitle>
+
+
+<div>
+    <EditForm Enhance="true" Model="CourseForEdit" FormName="EditCourse">
+
+        <DataAnnotationsValidator></DataAnnotationsValidator>
+        <ValidationSummary></ValidationSummary>
+
+        <div class="mb-4">
+            <label for="Name">Name : </label>
+            <InputText class="form-control" @bind-Value="@CourseForEdit.Name"></InputText>
+        </div>
+
+        <div class="mb-4">
+            <label for="Author">Author : </label>
+            <InputText class="form-control" @bind-Value="@CourseForEdit.Author"></InputText>
+        </div>
+
+        <div class="mb-4">
+            <label for="ReleaseDate">ReleaseDate : </label>
+            <InputDate class="form-control" @bind-Value="@CourseForEdit.ReleaseDate"></InputDate>
+        </div>
+
+        <div class="mb-4">
+            <label for="Level">Level : </label>
+            <InputSelect class="form-control" @bind-Value="@CourseForEdit.Level">
+                <option value="0">Please select level</option>
+                @foreach (var level in Enum.GetValues(typeof(CourseStore.Domain.CourseAgg.Enum.Level)))
+                {
+                    <option value="@level">@level.ToString()</option>
+                }
+            </InputSelect>
+        </div>
+
+        <div class="mb-4">
+            <label for="Description">Description : </label>
+            <InputTextArea class="form-control" @bind-Value="@CourseForEdit.Description"></InputTextArea>
+        </div>
+
+
+        <div class="mb-4">
+            <button class="btn btn-success" @onclick="()=>EditCourse()">Edit</button>
+            <a class="btn btn-primary" href="/Courses/List">Return</a>
+        </div>
+
+    </EditForm>
+</div>
+
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+
+    [SupplyParameterFromForm]
+    public EditCourseViewModel CourseForEdit { get; set; } = new EditCourseViewModel();
+
+    protected override async Task OnInitializedAsync()
+    {
+        var res = await _mediator.Send(new GetCourseByIdQuery(Id));
+
+        CourseForEdit.Id = res.Id;
+        CourseForEdit.Name = res.Name;
+        CourseForEdit.Description = res.Description;
+        CourseForEdit.Author = res.Author;
+        CourseForEdit.ReleaseDate = res.ReleaseDate;
+        CourseForEdit.Level = res.Level;
+    }
+
+    private async Task EditCourse()
+    {
+        EditCourseCommand command = new EditCourseCommand(CourseForEdit.Id, CourseForEdit.Name, CourseForEdit.Description, CourseForEdit.Author, CourseForEdit.ReleaseDate, CourseForEdit.Level);
+        await _mediator.Send(command);
+        _navigation.NavigateTo("/Courses/List");
+    }
+
+}

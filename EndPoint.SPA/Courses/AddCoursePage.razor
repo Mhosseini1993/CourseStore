@@ -1,0 +1,73 @@
+﻿@page "/Courses/Add"
+@inject MediatR.IMediator _mediator
+@inject NavigationManager _navigation
+
+<PageTitle>Add Course</PageTitle>
+
+<div>
+    <EditForm Enhance="true" Model="CourseForAdd" FormName="AddCourse" OnValidSubmit="AddCourse">
+        
+        <DataAnnotationsValidator></DataAnnotationsValidator>
+        <ValidationSummary></ValidationSummary>
+
+        <div class="mb-4">
+            <label for="Name">Name : </label>
+            <InputText class="form-control" @bind-Value="@CourseForAdd.Name"></InputText>
+        </div>
+
+        <div class="mb-4">
+            <label for="Author">Author : </label>
+            <InputText class="form-control" @bind-Value="@CourseForAdd.Author"></InputText>
+        </div>
+
+        <div class="mb-4">
+            <label for="ReleaseDate">ReleaseDate : </label>
+            <InputDate class="form-control" @bind-Value="@CourseForAdd.ReleaseDate"></InputDate>
+        </div>
+
+        <div class="mb-4">
+            <label for="Level">Level : </label>
+            <InputSelect class="form-control" @bind-Value="@CourseForAdd.Level">
+                <option value="0">Please select level</option>
+                @foreach (var level in Enum.GetValues(typeof(CourseStore.Domain.CourseAgg.Enum.Level)))
+                {
+                   <option value="@level">@level.ToString()</option>
+                }
+            </InputSelect>
+        </div>
+
+        <div class="mb-4">
+            <label for="Description">Description : </label>
+            <InputTextArea class="form-control" @bind-Value="@CourseForAdd.Description"></InputTextArea>
+        </div>
+
+
+        <div class="mb-4">
+            <button class="btn btn-success">Add</button>
+            <a class="btn btn-primary" href="/Courses/List">Return</a>
+        </div>
+        
+    </EditForm>
+</div>
+
+
+
+@code
+{
+    [SupplyParameterFromForm]
+    private AddCourseViewModel CourseForAdd { get; set; } = new AddCourseViewModel();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+    }
+
+    private async Task AddCourse()
+    {
+        AddCourseCommand obj = new AddCourseCommand(CourseForAdd.Name,CourseForAdd.Description,
+        CourseForAdd.Author,CourseForAdd.ReleaseDate,CourseForAdd.Level);
+        await _mediator.Send(obj);
+        _navigation.NavigateTo("/Courses/List");
+    }
+
+}

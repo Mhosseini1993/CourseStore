@@ -1,0 +1,92 @@
+﻿@page "/Courses/Add"
+@inject HttpClient _httpClient
+@inject NavigationManager _navigation
+
+<PageTitle>Add Course</PageTitle>
+
+<div>
+    <EditForm Enhance="true" Model="CourseForAdd" FormName="AddCourse" OnValidSubmit="AddCourse">
+
+        <DataAnnotationsValidator></DataAnnotationsValidator>
+
+
+        <div class="mb-4">
+            <label for="Name">Name : </label>
+            <div class="col-md-4">
+                <InputText class="form-control" @bind-Value="@CourseForAdd.Name"></InputText>
+                <ValidationMessage For="()=>CourseForAdd.Name"></ValidationMessage>
+            </div>
+        </div>
+
+        <div class="mb-4">
+            <label for="Author">Author : </label>
+            <div class="col-md-4">
+                <InputText class="form-control" @bind-Value="@CourseForAdd.Author"></InputText>
+                <ValidationMessage For="()=>CourseForAdd.Author"></ValidationMessage>
+            </div>
+        </div>
+
+        <div class="mb-4">
+            <label for="ReleaseDate">ReleaseDate : </label>
+            <div class="col-md-4">
+                <InputDate class="form-control" @bind-Value="@CourseForAdd.ReleaseDate"></InputDate>
+                <ValidationMessage For="()=>CourseForAdd.ReleaseDate"></ValidationMessage>
+            </div>
+        </div>
+
+        <div class="mb-4">
+            <label for="Level">Level : </label>
+            <div class="col-md-4">
+                <InputSelect class="form-control" @bind-Value="@CourseForAdd.Level">
+                    <option value="0">Please select level</option>
+                    @foreach (var level in Enum.GetValues(typeof(CourseStore.Domain.CourseAgg.Enum.Level)))
+                    {
+                        <option value="@level">@level.ToString()</option>
+                    }
+                </InputSelect>
+                <ValidationMessage For="()=>CourseForAdd.Level"></ValidationMessage>
+            </div>
+
+        </div>
+
+        <div class="mb-4">
+            <label for="Description">Description : </label>
+            <div class="col-md-4">
+                <InputTextArea class="form-control" @bind-Value="@CourseForAdd.Description"></InputTextArea>
+                <ValidationMessage For="()=>CourseForAdd.Description"></ValidationMessage>
+            </div>
+        </div>
+
+
+        <div class="mb-4">
+            <button class="btn btn-success">Add</button>
+            <a class="btn btn-primary" href="/Courses/List">Return</a>
+        </div>
+
+    </EditForm>
+</div>
+
+
+
+@code
+{
+    [SupplyParameterFromForm]
+    private AddCourseViewModel CourseForAdd { get; set; } = new AddCourseViewModel();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+    }
+
+    private async Task AddCourse()
+    {
+        var res = await _httpClient.PostAsJsonAsync<AddCourseViewModel>("api/course", CourseForAdd);
+        if (res.IsSuccessStatusCode)
+            _navigation.NavigateTo("/Courses/List");
+        else
+        {
+
+        }
+    }
+
+}
