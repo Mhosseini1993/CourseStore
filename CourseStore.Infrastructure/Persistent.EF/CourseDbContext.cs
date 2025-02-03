@@ -2,14 +2,15 @@
 using CourseStore.Domain.Shared;
 using CourseStore.Domain.UserAgg;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace CourseStore.Infrastructure.Persistent.EF
 {
     public class CourseDbContext : DbContext
     {
-        public CourseDbContext(DbContextOptions<CourseDbContext> options) : base(options)
+        public CourseDbContext(DbContextOptions<CourseDbContext> options) : base(options) 
         {
-
+            
         }
         public DbSet<Course> Courses { get; set; }
         public DbSet<User> Users { get; set; }

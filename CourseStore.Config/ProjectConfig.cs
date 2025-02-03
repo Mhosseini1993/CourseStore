@@ -43,5 +43,5 @@ namespace CourseStore.Config
             services.AddScoped<IUserQueryRepository, UserQueryRepository>();
         }
     }
-
+    
 }

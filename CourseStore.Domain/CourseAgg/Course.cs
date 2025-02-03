@@ -19,7 +19,6 @@ namespace CourseStore.Domain.CourseAgg
             NullOrEmptyDomainDataException.CheckIfNull(description, nameof(description));
             NullOrEmptyDomainDataException.CheckIfNull(author, nameof(author));
 
-            Name =name;
             Description=description;
             Author=author;
             ReleaseDate=releaseDate;

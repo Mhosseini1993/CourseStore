@@ -15,6 +15,7 @@ namespace CourseStore.Application.Courses.Add
                 .WithMessage("توضیحات نمی تواند خالی باشد")
                 .MinimumLength(10)
                 .WithMessage("حداقل طول باید 5 باشد");
+
         }
     }
     

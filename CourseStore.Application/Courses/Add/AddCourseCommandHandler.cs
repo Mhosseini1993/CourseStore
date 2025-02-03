@@ -16,7 +16,6 @@ namespace CourseStore.Application.Courses.Add
             this._mediator=mediator;
         }
 
-        public async Task<int> Handle(AddCourseCommand request, CancellationToken cancellationToken)
         {
             Course course = new Course(request.Name, request.Description, request.Author, request.ReleaseDate, request.Level);
             await _courseRepository.AddAsync(course);
@@ -26,7 +25,6 @@ namespace CourseStore.Application.Courses.Add
                 // await _mediator.Publish(@event);
                 await _mediator.Publish(new CourseCreated(course.Id, course.Name, "09358758908"));
             }
-            return course.Id;
         }
     }
 }
