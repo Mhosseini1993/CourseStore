@@ -28,6 +28,7 @@ namespace EndPoint.Api.Controllers
             {
                 List<Claim> claims = new List<Claim>()
             {
+                new Claim(ClaimTypes.NameIdentifier,user.Id.ToString()),
                 new Claim(ClaimTypes.Name,user.PhoneNumber),
                 new Claim(ClaimTypes.MobilePhone,command.PhoneNumber)
             };

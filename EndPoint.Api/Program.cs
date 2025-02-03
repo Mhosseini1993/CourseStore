@@ -1,6 +1,7 @@
 using CourseStore.Config;
 using CourseStore.Query.Courses.Mapper;
 using EndPoint.Api.ViewModels;
+using EndPoint.Api.ViewModels.User;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Options;
@@ -27,6 +28,8 @@ builder.Services.AddScoped<IMongoClient, MongoClient>(ef =>
 builder.Services.AddAutoMapper(typeof(CourseMapper).Assembly);
 ProjectConfig.Init(builder.Services, builder.Configuration);
 
+//builder.Services.AddScoped<ICustomTokenValidator, CustomTokenValidator>();
+
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme= JwtBearerDefaults.AuthenticationScheme;
@@ -50,6 +53,17 @@ builder.Services.AddAuthentication(options =>
         IssuerSigningKey=new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes("289ED825-904E-41BD-9C59-7121D6F63860")),
     };
     options.SaveToken=true;
+
+    
+    //options.Events=new JwtBearerEvents()
+    //{
+    //    OnTokenValidated=(TokenValidatedContext context) =>
+    //    {
+    //        var service=context.HttpContext.RequestServices.GetRequiredService<ICustomTokenValidator>();
+    //        return service.Execute(context);
+    //    }
+    //    //OnTokenValidated=nul
+    //};
 
 });
 
